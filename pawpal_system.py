@@ -1,7 +1,8 @@
 """PawPal+ logic layer: Task, Pet, Owner and Scheduler."""
 
+from collections import defaultdict
 from dataclasses import dataclass, field, replace
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Optional
 
 RECURRENCE_DAYS = {"daily": 1, "weekly": 7}
@@ -20,8 +21,14 @@ class Task:
     completed: bool = False
     pet_name: str = ""
 
+    def __post_init__(self):
+        """Reject malformed times so "HH:MM" string sorting stays valid."""
+        datetime.strptime(self.time, "%H:%M")
+
     def mark_complete(self) -> Optional["Task"]:
-        """Mark done and return the next occurrence for recurring tasks, else None."""
+        """Mark done and return the next occurrence (recurring tasks only); None if already done."""
+        if self.completed:
+            return None
         self.completed = True
         days = RECURRENCE_DAYS.get(self.frequency)
         if days is None:
@@ -99,9 +106,9 @@ class Scheduler:
 
     def detect_conflicts(self) -> List[str]:
         """Return warning messages for incomplete tasks sharing the same date and time."""
-        slots = {}
+        slots = defaultdict(list)
         for t in self.filter_tasks(completed=False):
-            slots.setdefault((t.due_date, t.time), []).append(t)
+            slots[(t.due_date, t.time)].append(t)
         return [
             f"Warning: {len(group)} tasks at {time} on {day}: "
             + ", ".join(f"{t.description} ({t.pet_name})" for t in group)

@@ -90,7 +90,7 @@ Completed tasks (filtered by status)
 python -m pytest
 ```
 
-The suite (`tests/test_pawpal.py`) covers task completion, task addition, multi-pet task retrieval, chronological sorting, daily and weekly recurrence, one-off tasks not recurring, conflict detection (same time across pets; no false positives for different times or completed tasks), filtering by pet/status, and a pet with no tasks.
+The suite (`tests/test_pawpal.py`) covers task completion, task addition, multi-pet task retrieval, chronological sorting, daily and weekly recurrence, one-off tasks not recurring, conflict detection (same time across pets; no false positives for different times or completed tasks), filtering by pet/status, completing a task twice not duplicating its recurrence, rejection of malformed times, and a pet with no tasks.
 
 ```
 ============================= test session starts =============================
@@ -98,14 +98,14 @@ platform win32 -- Python 3.13.7, pytest-9.0.3, pluggy-1.6.0
 rootdir: C:\Users\user\OneDrive - Radford University\Desktop\Code Path\ai110-module2show-pawpal-starter
 plugins: anyio-4.13.0, asyncio-1.3.0, cov-7.1.0
 asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
-collected 11 items
+collected 13 items
 
-tests\test_pawpal.py ...........                                         [100%]
+tests\test_pawpal.py .............                                       [100%]
 
-============================= 11 passed in 0.10s ==============================
+============================= 13 passed in 0.06s ==============================
 ```
 
-**Confidence level:** ★★★★☆ (4/5). Core behaviors pass; durations/overlaps, invalid time strings, and month-end edge cases are untested.
+**Confidence level:** ★★★★☆ (4/5). Core behaviors pass; duration overlaps and month-end rollover are untested.
 
 ## 📐 Smarter Scheduling
 

@@ -94,3 +94,18 @@ def test_pet_with_no_tasks():
     scheduler, _, _ = make_scheduler()
     assert scheduler.get_todays_schedule() == []
     assert scheduler.detect_conflicts() == []
+
+
+def test_completing_twice_does_not_duplicate_recurring_task():
+    scheduler, dog, _ = make_scheduler()
+    task = Task("Walk", "08:00", "daily")
+    dog.add_task(task)
+    scheduler.mark_task_complete(task)
+    assert scheduler.mark_task_complete(task) is None
+    assert len(dog.tasks) == 2
+
+
+def test_invalid_time_is_rejected():
+    import pytest
+    with pytest.raises(ValueError):
+        Task("Walk", "8am")
